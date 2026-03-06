@@ -4,6 +4,10 @@ A Snowflake-connected Streamlit dashboard for DTC subscription businesses, featu
 
 **[Live Demo →](https://ktillis-subsight-analytics.streamlit.app/)**
 
+<p align="center">
+  <img src="docs/screenshots/01_Landing.png" alt="SubSight Landing Page" width="800">
+</p>
+
 ---
 
 ## Business Context
@@ -17,13 +21,19 @@ This project simulates a subscription analytics platform using the Telco Custome
 ## Key Findings
 
 ### A/B Test: Annual Plan Discount Offer
-The treatment group (20% annual plan discount) converted at approximately 16% vs. 12% for control — a statistically significant ~33% relative lift (p < 0.01). If rolled out, this translates to roughly 280 incremental annual plan conversions per 7,000 users, at ~$960 revenue per conversion. **Recommendation: roll out the discount offer and monitor for long-term retention effects.**
+The treatment group (20% annual plan discount) converted at approximately 16% vs. 12% for control — a statistically significant ~33% relative lift (p < 0.01). If rolled out, this translates to roughly 280 incremental annual plan conversions per 7,000 users, at ~$960 revenue per conversion. 
+
+**Recommendation: roll out the discount offer and monitor for long-term retention effects.**
 
 ### Churn Propensity Model
-A Gradient Boosting classifier achieved an AUC-ROC of ~0.85 and F1 of ~0.60 on the churn prediction task. SHAP analysis revealed that contract type, tenure, and monthly charges are the strongest churn drivers — month-to-month customers with short tenure and high monthly bills are the highest risk cohort. **Recommendation: target High-Risk customers with retention offers before their next billing cycle.**
+A Gradient Boosting classifier achieved an AUC-ROC of ~0.85 and F1 of ~0.60 on the churn prediction task. SHAP analysis revealed that contract type, tenure, and monthly charges are the strongest churn drivers — month-to-month customers with short tenure and high monthly bills are the highest risk cohort. 
+
+**Recommendation: target High-Risk customers with retention offers before their next billing cycle.**
 
 ### Customer Segmentation
-K-means clustering identified distinct customer segments ranging from high-value long-tenure loyalists to at-risk new subscribers with low spend. The highest-churn segment shows 3x the churn rate of the most stable segment despite comparable monthly revenue. **Recommendation: invest in onboarding improvements for the first 6 months of the customer lifecycle, where churn risk concentrates.**
+K-means clustering identified distinct customer segments ranging from high-value long-tenure loyalists to at-risk new subscribers with low spend. The highest-churn segment shows 3x the churn rate of the most stable segment despite comparable monthly revenue. 
+
+**Recommendation: invest in onboarding improvements for the first 6 months of the customer lifecycle, where churn risk concentrates.**
 
 ---
 
@@ -36,12 +46,20 @@ K-means clustering identified distinct customer segments ranging from high-value
 - Segment-level drill-down (by contract type, tenure, revenue tier)
 - Sample size calculator for planning future experiments
 
+<p align="center">
+  <img src="docs/screenshots/02_AB_Test.png" alt="A/B Test Analyzer" width="800">
+</p>
+
 ### 🎯 Churn Propensity Scoring
 - Gradient Boosting classifier with cross-validated evaluation
 - ROC curve and performance metrics (AUC, F1, Precision, Recall)
 - SHAP-based global feature importance
 - Per-customer SHAP waterfall explanations
 - Scored customer table with risk tiers (High / Medium / Low)
+
+<p align="center">
+  <img src="docs/screenshots/03_Churn_Propensity.png" alt="Churn Propensity Scoring" width="800">
+</p>
 
 ### 👥 Customer Segmentation
 - K-means clustering with elbow and silhouette analysis
@@ -52,12 +70,16 @@ K-means clustering identified distinct customer segments ranging from high-value
 - Customer-level drill-down per segment
 - Write-back to Snowflake (`ANALYTICS.SEGMENTS`)
 
+<p align="center">
+  <img src="docs/screenshots/04_Segments.png" alt="Customer Segmentation" width="800">
+</p>
+
 ---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────-─────────┐
+┌───────────────────────────────────────────────────┐
 │                 Streamlit Cloud                   │
 │  ┌────────────┬──────────────┬─────────────────┐  │
 │  │  A/B Test  │   Churn      │   Customer      │  │
@@ -67,14 +89,13 @@ K-means clustering identified distinct customer segments ranging from high-value
 │            snowflake-connector-python             │
 └──────────────────────┼────────────────────────────┘
                        │
-               ┌───────┴────────┐
-               │   Snowflake    │
-               │                │
-               │  RAW.CUSTOMERS │
-               │ RAW.EXPERIMENTS│
-               │   ANALYTICS.   │
-               │    SEGMENTS    │
-               └────────────────┘
+            ┌──────────┴─────────┐
+            │      Snowflake     │
+            │                    │
+            │    RAW.CUSTOMERS   │
+            │   RAW.EXPERIMENTS  │
+            │ ANALYTICS.SEGMENTS │
+            └────────────────────┘
 ```
 
 ---
@@ -142,8 +163,17 @@ streamlit run app.py
 
 ```
 subsight_analytics/
+├── data/
+│   └── WA_Fn-UseC_-Telco-Customer-Churn.csv
+├── docs/
+│   └── screenshots/
+│   │   ├── 01_Landing.png
+│   │   ├── 02_AB_Test.png
+│   │   ├── 03_Churn_Propensity.png
+│   │   └── 04_Segments.png
 ├── src/
 │   ├── .streamlit/
+│   │   ├── secrets.toml
 │   │   └── secrets.toml.example
 │   ├── pages/
 │   │   ├── 1_AB_Test_Analyzer.py
