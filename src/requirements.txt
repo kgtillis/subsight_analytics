@@ -1,0 +1,10 @@
+streamlit>=1.30.0
+snowflake-connector-python[pandas]
+snowflake-snowpark-python
+python-dotenv
+pandas
+numpy
+scikit-learn
+shap
+plotly
+scipy
